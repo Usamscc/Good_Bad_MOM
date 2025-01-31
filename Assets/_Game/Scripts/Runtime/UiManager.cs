@@ -11,6 +11,9 @@ public class UiManager : MonoBehaviour
   
   [Header("PopUps")]
   [SerializeField] private GameObject settingPopUp;
+  [SerializeField] private GameObject failedScreenPopUp;
+  [SerializeField] private GameObject topBar,sliderCanvas;
+  
 
   [Header("Text UI")]
   [SerializeField] private Text coinText;
@@ -18,6 +21,7 @@ public class UiManager : MonoBehaviour
   [Header("Slider UI")]
   [SerializeField] private Slider beautySlider;
   [SerializeField] private Slider levelSlider;
+  [SerializeField] private GameObject swipeSlider;
   
   private float fullDistance;
   
@@ -29,6 +33,24 @@ public class UiManager : MonoBehaviour
       instance = this;
     
     }
+  }
+
+
+  public void FailedScreenPopUp()
+  {
+    Invoke(nameof(CallFailedScreenPopUp), 4.5f);
+  }
+
+  public void CallFailedScreenPopUp()
+  {
+    failedScreenPopUp.SetActive(true);
+    topBar.SetActive(false);
+    sliderCanvas.SetActive(false);
+  }
+
+  public void DeactivateTutorial()
+  {
+    swipeSlider.gameObject.SetActive(false);
   }
   
   public void LevelSliderSetter(float levelSliderValue)

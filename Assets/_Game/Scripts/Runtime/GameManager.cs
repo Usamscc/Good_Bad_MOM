@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
     [Header("GameObjects")]
     [SerializeField] private GameObject cameraParent;
     
+    // Vector3(0.310000002,-0.061999999,-187.369995)
     
     [Space]
     [Header("Variables")]
@@ -14,11 +15,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int beautyScore = 100;
     [SerializeField] private PlayerData playerData;
     
-    [HideInInspector]
-    public bool beautyPositive = true;
+    [HideInInspector] public bool beautyPositive = true;
+    [HideInInspector] public bool isGameStarted = false;
     
     private bool isGameEnded=false;
     private bool isGamePaused = false;
+    
     
     private string filePath;
   
@@ -29,7 +31,6 @@ public class GameManager : MonoBehaviour
         {
             instance = this;
         }
-        //UiManager.instance.PauseGame += PauseGame;
     }
 
     private void Start()
@@ -48,18 +49,56 @@ public class GameManager : MonoBehaviour
     {
         beautyScore+=score;
         playerData.beautyScore +=score;
+        if (playerData.beautyScore < 0)
+        {
+            playerData.beautyScore = 0;
+        }
         UiManager.instance.BeautySliderSetter(playerData.beautyScore/100f); 
         // beautyText.text = playerData.beautyScore.ToString();
-        beautyPositive = beautyScore >= beautyFactor;
+        beautyPositive =  playerData.beautyScore >= beautyFactor;
         
     }
     public void GameEnded()
     {
-        RotateItems cameraRotate=cameraParent.GetComponent<RotateItems>();
-        cameraRotate.enabled = true;
+        RotateItems cameraRotate = cameraParent.GetComponent<RotateItems>();
         isGameEnded = true;
+
+        if (beautyPositive)
+        {
+            cameraRotate.enabled = true;
+           
+            print("sharam ker");
+        }
+        else
+        {
+            UiManager.instance.FailedScreenPopUp();
+        }
         
-        print("Game Over " + isGameEnded);
+        // if (beautyPositive)
+        // {
+        //     RotateItems cameraRotate = cameraParent.GetComponent<RotateItems>();
+        //     cameraRotate.enabled = true;
+        //     isGameEnded = true;
+        // }
+        // else
+        // {
+        //     UiManager.instance.FailedScreenPopUp();
+        // }
+        //
+        
+    }
+
+    public void StartGame()
+    {
+        if (Input.GetAxis("Horizontal") != 0)
+        {
+            isGameStarted = true;
+        }
+
+        if (isGameStarted)
+        {
+            UiManager.instance.DeactivateTutorial();
+        }
     }
 
     public void PauseGame()

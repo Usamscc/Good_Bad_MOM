@@ -34,19 +34,17 @@ public class PlayerManager : MonoBehaviour
         {
             MovePlayer();
           
-        }else{
-            
-            confettiPS.gameObject.SetActive(true);
         }
         
-        
+       
         GameManager.instance.RemainingLevelDistance(transform,malePosiiton.transform);
         
     }
    
     private void MovePlayer()
     {
-        if (isactive)
+        GameManager.instance.StartGame();
+        if (GameManager.instance.isGameStarted)
         {
             //check if race line crossed and restrict user to move horizontally 
             if (gameFinishedCrossed)
@@ -68,21 +66,14 @@ public class PlayerManager : MonoBehaviour
         
     }
 
-    // private void IsWorking()
-    // {
-    //     if (Input.GetMouseButton(0))
-    //     {Debug.Log("isworking");
-    //         isactive = true;
-    //     }
-    // }
-
     
     public void HandleCollisionAnimation(CollisionType collisionType)
     {
         switch (collisionType)
         {
             case CollisionType.Male:
-               HandleMaleCollision();   
+               HandleMaleCollision(); 
+               GameManager.instance.GameEnded();
                 break;
 
             case CollisionType.Obstacles:
@@ -120,6 +111,7 @@ public class PlayerManager : MonoBehaviour
         if (GameManager.instance.beautyPositive)
         {
             playerAnimation.KissAnimation();
+            confettiPS.gameObject.SetActive(true);
         }
         else
         {
@@ -127,7 +119,7 @@ public class PlayerManager : MonoBehaviour
             playerAnimation.FallAnimation();
         }
                 
-        GameManager.instance.GameEnded();
+       
     }
 
     private void HandleObstacleCollision()
