@@ -13,12 +13,18 @@ public class UiManager : MonoBehaviour
   [SerializeField] private GameObject settingPopUp;
   [SerializeField] private GameObject failedScreenPopUp;
   [SerializeField] private GameObject topBar,sliderCanvas;
-  
 
-  [Header("Text UI")]
+    [Header("Sounds State")]
+    [SerializeField] private Sprite musicOn;
+    [SerializeField] private Sprite musicOff;
+    [SerializeField] private Image musicBtn;
+
+
+    [Header("Text UI")]
   [SerializeField] private Text coinText;
-  
-  [Header("Slider UI")]
+    [SerializeField] private string privacyPolicyURL = "https://your-privacy-policy-link.com";
+
+    [Header("Slider UI")]
   [SerializeField] private Slider beautySlider;
   [SerializeField] private Slider levelSlider;
   [SerializeField] private GameObject swipeSlider;
@@ -92,18 +98,24 @@ public void MusicOffBtnClick()
         isMusicOn =!isMusicOn;
         if (isMusicOn)
         {
+            musicBtn.sprite = musicOn;
             AudioManager.instance.Play("Theme");
 
         }
         else
         {
+            musicBtn.sprite = musicOff;
             AudioManager.instance.Pause("Theme");
 
         }
        
     }
+   public void OpenPrivacyPolicy()
+    {
+        Application.OpenURL(privacyPolicyURL);
+    }
 
-  public void RestartBtnClick()
+    public void RestartBtnClick()
   {
         AudioManager.instance.Play("SettingOn");
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);

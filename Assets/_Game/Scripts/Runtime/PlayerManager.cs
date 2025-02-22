@@ -1,5 +1,6 @@
+using System;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+
 
 
 public class PlayerManager : MonoBehaviour
@@ -9,17 +10,27 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] private PlayerAnimation playerAnimation;
     [SerializeField] private MaleCollision malePosiiton;
     [SerializeField] private ParticleSystem confettiPS;
+    [SerializeField] private FixedTouchField fixedTouchField;
+    [SerializeField] private GameObject beautyBar;
+    // [SerializeField] private GameObject coins;
+    // [SerializeField] private GameObject coinPrefab;
 
+    [Header("Game Variables")]
+    [SerializeField] private float movingSpeed = 1f;
+    [SerializeField] private float horizontalSpeed = 500f;
+    [SerializeField] private float animationSpeed = .9f;
+    
     private bool isactive=true;
     private bool gameFinishedCrossed = false;
     private Vector3 move;
-    private float movingSpeed = 1f;
-    private float animationSpeed = .9f;
+   
     private Vector3 dist;
 
     private void Start()
     {
         SendLevelDisatance();
+        print("Screen.width "+Screen.width);
+        // Instantiate(coinPrefab,coins.transform);
     }
 
     private void SendLevelDisatance()
@@ -29,21 +40,23 @@ public class PlayerManager : MonoBehaviour
 
     private void Update()
     { 
-        // IsWorking();
+       
         if (GameManager.instance.GetGameOver())
         {
             MovePlayer();
           
         }
-        
-       
         GameManager.instance.RemainingLevelDistance(transform,malePosiiton.transform);
         
     }
-   
+
     private void MovePlayer()
     {
-        GameManager.instance.StartGame();
+        if (fixedTouchField.isDragged)
+        {
+            GameManager.instance.StartGame();
+        }
+       
         if (GameManager.instance.isGameStarted)
         {
             //check if race line crossed and restrict user to move horizontally 
@@ -54,7 +67,9 @@ public class PlayerManager : MonoBehaviour
             }
             else
             {
-                move = new Vector3(Input.GetAxis("Horizontal"), 0, movingSpeed);
+                
+                // move = new Vector3(Input.GetAxis("Horizontal"), 0, movingSpeed);
+                move = new Vector3(fixedTouchField.TouchDist.x * horizontalSpeed *Time.deltaTime, 0, movingSpeed);
                 playerMovement.PlayerMovement(move);
             }
 
@@ -81,6 +96,7 @@ public class PlayerManager : MonoBehaviour
                 break;
             
             case CollisionType.Finish:
+                beautyBar.SetActive(false);
                 gameFinishedCrossed = true;
                 GameManager.instance.SaveData();
                 break;
